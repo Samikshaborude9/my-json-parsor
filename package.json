@@ -1,18 +1,42 @@
+
 {
   "name": "my-json-parser",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "A lightweight TypeScript JSON parser that converts JSON text into an Abstract Syntax Tree (AST).",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "build": "tsup && tsc -p tsconfig.build.json",
+    "prepublishOnly": "npm run typecheck && npm test && npm run build"
   },
-  "keywords": [],
+  "keywords": [
+    "json",
+    "parser",
+    "typescript",
+    "ast",
+    "json-parser"
+  ],
   "author": "",
-  "license": "ISC",
-  "description": "",
+  "license": "MIT",
   "devDependencies": {
     "tsx": "^4.23.15",
     "typescript": "^7.0.2",
-    "vitest": "^5.0.5"
+    "vitest": "^5.0.5",
+    "tsup": "^8.5.1"
   }
 }
