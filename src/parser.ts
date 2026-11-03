@@ -38,6 +38,10 @@ export class Parser {
     return `'${this.current.literal}'`;
   }
 
+  private currentIs(type: TokenType): boolean {
+    return this.current.type === type;
+  }
+
   private fail(message: string): never {
     throw new ParseError(
       message,
@@ -93,7 +97,7 @@ export class Parser {
     const opening = this.expect(TokenType.LeftBracket, "'['");
     const elements: JsonNode[] = [];
 
-    if (this.current.type === TokenType.RightBracket) {
+    if (this.currentIs(TokenType.RightBracket)) {
       this.advance();
       return { type: "array", elements, pos: this.posOf(opening) };
     }
@@ -101,13 +105,13 @@ export class Parser {
     while (true) {
       elements.push(this.parseValue());
 
-      if (this.current.type === TokenType.RightBracket) {
+      if (this.currentIs(TokenType.RightBracket)) {
         this.advance();
         return { type: "array", elements, pos: this.posOf(opening) };
       }
 
       this.expect(TokenType.Comma, "','");
-      if (this.current.type === TokenType.RightBracket) {
+      if (this.currentIs(TokenType.RightBracket)) {
         this.fail("Trailing commas are not allowed in arrays");
       }
     }
@@ -117,7 +121,7 @@ export class Parser {
     const opening = this.expect(TokenType.LeftBrace, "'{'");
     const members: ObjectMember[] = [];
 
-    if (this.current.type === TokenType.RightBrace) {
+    if (this.currentIs(TokenType.RightBrace)) {
       this.advance();
       return { type: "object", members, pos: this.posOf(opening) };
     }
@@ -130,13 +134,13 @@ export class Parser {
         value: this.parseValue(),
       });
 
-      if (this.current.type === TokenType.RightBrace) {
+      if (this.currentIs(TokenType.RightBrace)) {
         this.advance();
         return { type: "object", members, pos: this.posOf(opening) };
       }
 
       this.expect(TokenType.Comma, "','");
-      if (this.current.type === TokenType.RightBrace) {
+      if (this.currentIs(TokenType.RightBrace)) {
         this.fail("Trailing commas are not allowed in objects");
       }
     }
